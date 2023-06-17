@@ -12,7 +12,7 @@ import streamlit as st
 
 # In[2]:
 #importing dataframe
-vehicles_us = pd.read_csv('/My-New-Repo/vehicles_us.csv')
+vehicles_us = pd.read_csv('Dan-Koch/My-New-Repo/vehicles_us.csv')
 
 #filling paint color with unknown
 vehicles_us['paint_color'].fillna('unknown', inplace= True)

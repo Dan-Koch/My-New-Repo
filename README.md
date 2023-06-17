@@ -7,3 +7,5 @@ This will require streamlit, plotly express, and pandas libraries.
 The app url is: https://info-on-cars-in-the-us-via-streamlit.onrender.com
 
 Hopefully all you have to do is click the link to run the app.
+
+It may take a while for the website to load.

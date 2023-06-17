@@ -6,10 +6,6 @@
 
 #importing any libraries we may need
 import pandas as pd
-from matplotlib import pyplot as plt
-import numpy as np
-import requests
-import json
 import plotly_express as px
 import streamlit as st
 

@@ -18,7 +18,23 @@ import streamlit as st
 #importing dataframe
 vehicles_us = pd.read_csv('/Users/danie/My-New-Repo/vehicles_us.csv')
 
+#filling paint color with unknown
+vehicles_us['paint_color'].fillna('unknown', inplace= True)
 
+#filling median year in for NaN values
+year_median = vehicles_us['model_year'].median()
+vehicles_us['model_year'].fillna(year_median, inplace= True)
+
+#filling median cylinders in for NaN values
+cylinder_median = vehicles_us['cylinders'].median()
+vehicles_us['cylinders'].fillna(cylinder_median, inplace= True)
+
+#filling median odometer reading into NaN values
+odometer_median = vehicles_us['odometer'].median()
+vehicles_us['odometer'].fillna(odometer_median, inplace= True)
+
+#filling NaN values with 0 for is_4wd
+vehicles_us['is_4wd'].fillna(0, inplace= True)
 # In[3]:
 #creating a header with streamlit
 st.header('Information on Cars in the US')
@@ -91,7 +107,8 @@ st.plotly_chart(graph3)
 
 #creating a checkbox to show a correlation matrix when true
 corr_matrix_checkbox = st.checkbox('Display Correlation Matrix?')
-corr_matrix = vehicles_us.corr()
+corr_vehicles = vehicles_us[['price','model_year', 'cylinders', 'odometer','days_listed']]
+corr_matrix = corr_vehicles.corr()
 
 if corr_matrix_checkbox:
     st.dataframe(corr_matrix)

@@ -12,17 +12,15 @@ vehicles_us = pd.read_csv('vehicles_us.csv')
 #filling paint color with unknown
 vehicles_us['paint_color'].fillna('unknown', inplace= True)
 
-#filling median year in for NaN values
-year_median = vehicles_us['model_year'].median()
-vehicles_us['model_year'].fillna(year_median, inplace= True)
+#filling model_year NaN values with median after grouping by model
+vehicles_us['model_year']= vehicles_us['model_year'].fillna(vehicles_us.groupby('model')['model_year'].transform('median'))
 
-#filling median cylinders in for NaN values
-cylinder_median = vehicles_us['cylinders'].median()
-vehicles_us['cylinders'].fillna(cylinder_median, inplace= True)
+#filling cylinder NaN values with median after grouping by model
+vehicles_us['cylinders']= vehicles_us['cylinders'].fillna(vehicles_us.groupby('model')['cylinders'].transform('median'))
 
-#filling median odometer reading into NaN values
-odometer_median = vehicles_us['odometer'].median()
-vehicles_us['odometer'].fillna(odometer_median, inplace= True)
+#filling odometer NaN values with median after grouping by model_year
+#i am grouping by year, because in theory the older the vehicle the higher the odometer value
+vehicles_us['odometer']= vehicles_us['odometer'].fillna(vehicles_us.groupby('model_year')['cylinders'].transform('median'))
 
 #filling NaN values with 0 for is_4wd
 vehicles_us['is_4wd'].fillna(0, inplace= True)
@@ -31,31 +29,11 @@ vehicles_us['is_4wd'].fillna(0, inplace= True)
 st.header('Information on Cars in the US')
 st.dataframe(vehicles_us)
 
-#creating a selectbox
-model_veh = vehicles_us['model'].unique()
-vehicle_select = st.selectbox('model:', model_veh)
-
-#creating a slider for the model year
-#variables for the min and max of the slider
-min_year= int(vehicles_us['model_year'].min())
-max_year= int(vehicles_us['model_year'].max())
-
-#creating a slider
-year_range = st.slider("Choose years", value= (min_year, max_year), min_value= min_year, max_value= max_year)
-real_range = list(range(year_range[0], year_range[1]+ 1))
-
-#filtering dataframe based on selectbox and year range
-filter_model_year = vehicles_us[(vehicles_us['model'] == vehicle_select) & (vehicles_us['model_year'].isin(list(real_range)))]
-
-#showing the information the user selected
-st.write("Here you see all the vehicles of the model you selected that was built within the years on the slider.")
-st.table(filter_model_year)
-
 #creating a list for historgram
 list_for_hist= ['odometer', 'fuel', 'type', 'condition',]
 
 #creating a selectbox for histogram
-hist_select= st.selectbox('Choose for price distribution', list_for_hist)
+hist_select= st.selectbox('Choose for price distribution', list_for_hist, index= 0)
 
 #histogram with price as the x axis and user chooses the y axis
 graph1= px.histogram(vehicles_us, x='price', color= hist_select)
@@ -70,7 +48,7 @@ st.plotly_chart(graph1)
 list_for_scatter = ['odometer', 'days_listed', 'cylinders', 'condition']
 
 #creating a selectbox for scatterplot
-scatter_select= st.selectbox('Price dependency on ', list_for_scatter)
+scatter_select= st.selectbox('Price dependency on ', list_for_scatter, index= 0)
 graph2= px.scatter(vehicles_us, x= 'price', y= scatter_select, hover_data=['model_year'])
 
 #adding title
@@ -79,7 +57,7 @@ st.plotly_chart(graph2)
 
 #creatting a scatter plot of days listed vs a few columns from a list
 list_for_hist_days= ['price', 'condition', 'transmission', 'fuel', 'model_year']
-hist_select_days= st.selectbox('Select a column to see how many days it is listed', list_for_hist_days)
+hist_select_days= st.selectbox('Select a column to see how many days it is listed', list_for_hist_days, index= 0)
 
 graph3= px.histogram(vehicles_us, x= 'days_listed', y= hist_select_days, color= hist_select_days)
 graph3.update_layout(title= "<b> Days listed vs {}</b>".format(hist_select_days))
